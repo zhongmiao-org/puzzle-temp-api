@@ -9,7 +9,29 @@ export const DATA_SOURCE_OPTIONS = [
       },
       {
         label: '柱状图和折线图数据',
-        val: '/bar-and-line'
+        val: '',
+        children: [
+          {
+            label: '苹果公司数据',
+            val: '/bar-and-line'
+          },
+          {
+            label: '三星公司数据',
+            val: '/bar-and-line/samsung'
+          },
+          {
+            label: '华为公司数据',
+            val: '/bar-and-line/huawei'
+          },
+          {
+            label: '小米公司数据',
+            val: '/bar-and-line/xiaomi'
+          },
+          {
+            label: '谷歌公司数据',
+            val: '/bar-and-line/google'
+          }
+        ]
       },
       {
         label: '蜡烛图和OHLC数据',

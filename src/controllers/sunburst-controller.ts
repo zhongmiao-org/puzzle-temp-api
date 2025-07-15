@@ -20,7 +20,8 @@ export class SunburstController {
       res,
       sunburstData,
       '获取旭日图数据成功',
-      sunburstData.length
+      sunburstData.length,
+      'tree'
     );
   }
 }

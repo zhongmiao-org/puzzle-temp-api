@@ -12,6 +12,7 @@ export interface SuccessResponse<T> {
   data: T;
   message: string;
   count?: number;
+  dataType?: 'array' | 'tree';
 }
 
 // 错误响应接口
@@ -30,11 +31,13 @@ export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
  * @param data 响应数据
  * @param message 成功消息
  * @param count 数据计数（可选）
+ * @param dataType 数据类型（可选，'array'或'tree'）
  */
 export function createSuccessResponse<T>(
   data: T,
   message: string,
-  count?: number
+  count?: number,
+  dataType?: 'array' | 'tree'
 ): SuccessResponse<T> {
   const response: SuccessResponse<T> = {
     success: true,
@@ -44,6 +47,10 @@ export function createSuccessResponse<T>(
 
   if (count !== undefined) {
     response.count = count;
+  }
+
+  if (dataType !== undefined) {
+    response.dataType = dataType;
   }
 
   return response;
@@ -72,6 +79,7 @@ export function createErrorResponse(
  * @param data 响应数据
  * @param message 成功消息
  * @param count 数据计数（可选）
+ * @param dataType 数据类型（可选，'array'或'tree'）
  * @param status HTTP状态码（默认200）
  */
 export function sendSuccess<T>(
@@ -79,9 +87,10 @@ export function sendSuccess<T>(
   data: T,
   message: string,
   count?: number,
+  dataType?: 'array' | 'tree',
   status: number = 200
 ): Response {
-  return res.status(status).json(createSuccessResponse(data, message, count));
+  return res.status(status).json(createSuccessResponse(data, message, count, dataType));
 }
 
 /**
