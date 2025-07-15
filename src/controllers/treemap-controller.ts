@@ -20,7 +20,8 @@ export class TreemapController {
       res,
       treemapData,
       '获取树图数据成功',
-      treemapData.length
+      treemapData.length,
+      'tree'
     );
   }
 }

@@ -16,18 +16,11 @@ export class CandlestickAndOhlcController {
    */
   @Get('/')
   getCandlestickAndOhlcData(@Res() res: Response): Response {
-    // 创建一个新的数组，将Date对象转换为时间戳
-    const data = candlestickAndOhlcData.map(item => ({
-      ...item,
-      // 将Date对象转换为时间戳（毫秒），AG Charts可以识别这种格式
-      date: item.date.getTime()
-    }));
-
     return sendSuccess(
       res,
-      data,
+      candlestickAndOhlcData,
       '获取蜡烛图和OHLC图数据成功',
-      data.length
+      candlestickAndOhlcData.length
     );
   }
 }
