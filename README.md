@@ -59,6 +59,89 @@ npm run build
 npm start
 ```
 
+## 使用 Docker 部署
+
+本项目已提供 Dockerfile 和 docker-compose.yml，便于本地和服务器部署。
+
+- 构建镜像（本地或服务器任意一端）：
+```bash
+docker build -t puzzle-temp-api:latest .
+```
+
+- 直接运行容器：
+```bash
+docker run -d --name puzzle-temp-api -p 3000:3000 -e NODE_ENV=production -e PORT=3000 puzzle-temp-api:latest
+```
+
+- 使用 docker-compose 运行（本地开发或服务器）：
+```bash
+# 首次部署/需要重新构建时
+docker compose up -d --build
+
+# 如果镜像已经存在（不想在服务器构建），使用 --no-build
+docker compose up -d --no-build
+```
+
+- 健康检查：
+```bash
+curl http://localhost:3000/health
+```
+
+### 不使用 Docker Hub 的部署方案（推荐）
+
+你可以完全不依赖 Docker Hub，有两种方式：
+
+1) 在服务器上构建并运行（最简单）
+```bash
+# 将仓库代码拷贝到服务器（含 Dockerfile 与 docker-compose.yml）
+# 然后在服务器上执行：
+docker compose up -d --build
+```
+
+2) 在本地打包镜像并拷贝到服务器（服务器无需构建）
+```bash
+# 在本地构建镜像
+docker build -t puzzle-temp-api:latest .
+
+# 导出镜像为 tar 包
+docker save puzzle-temp-api:latest -o puzzle-temp-api.tar
+
+# 传到服务器（示例用 scp）
+scp puzzle-temp-api.tar user@server:/opt/puzzle-temp-api/
+
+# 到服务器加载镜像
+ssh user@server "cd /opt/puzzle-temp-api && docker load -i puzzle-temp-api.tar"
+
+# 在服务器上启动（不重新构建）
+ssh user@server "cd /opt/puzzle-temp-api && docker compose up -d --no-build"
+```
+
+提示：当前 docker-compose.yml 同时包含 image 与 build 字段。
+- 如果服务器已加载本地镜像 puzzle-temp-api:latest，则 `--no-build` 会直接使用该镜像。
+- 如果需要重建，使用 `--build` 即可在服务器上构建。
+- 无需推送或拉取 Docker Hub。
+
+### 服务器部署步骤示例
+
+1. 将代码（以及可选的已打包镜像 tar）拷贝到服务器同一目录，例如 `/opt/puzzle-temp-api`。
+2. 确保服务器已安装 Docker 与 Docker Compose（Docker 24+ 自带 compose）。
+3. 选择其一：
+   - 在服务器上构建：`docker compose up -d --build`
+   - 使用已加载的镜像：`docker compose up -d --no-build`
+4. 更新部署：
+```bash
+# 方式 A：在服务器重新构建（不依赖 Hub）
+docker compose build --no-cache
+docker compose up -d
+
+# 方式 B：本地重建并通过 tar 分发
+# （同上：build -> save -> scp -> load -> up --no-build）
+```
+5. 查看日志：
+```bash
+docker compose logs -f
+```
+
 ## API 接口
 
 ### 用户接口
